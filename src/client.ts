@@ -4,6 +4,9 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { chargerClient } from './services/chargers/chargers.shared'
+export type { Charger, ChargerData, ChargerQuery, ChargerPatch } from './services/chargers/chargers.shared'
+
 import { feedbackClient } from './services/feedback/feedback.shared'
 export type {
   Feedback,
@@ -52,5 +55,6 @@ export const createClient = <Configuration = any,>(
   client.configure(userClient)
   client.configure(favoriteClient)
   client.configure(feedbackClient)
+  client.configure(chargerClient)
   return client
 }

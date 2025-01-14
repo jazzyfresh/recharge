@@ -1,3 +1,4 @@
+import { charger } from './chargers/chargers'
 import { feedback } from './feedback/feedback'
 import { favorite } from './favorites/favorites'
 import { user } from './users/users'
@@ -5,6 +6,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(charger)
   app.configure(feedback)
   app.configure(favorite)
   app.configure(user)
