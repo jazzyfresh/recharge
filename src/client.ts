@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { favoriteClient } from './services/favorites/favorites.shared'
+export type {
+  Favorite,
+  FavoriteData,
+  FavoriteQuery,
+  FavoritePatch
+} from './services/favorites/favorites.shared'
+
 import { userClient } from './services/users/users.shared'
 export type { User, UserData, UserQuery, UserPatch } from './services/users/users.shared'
 
@@ -34,5 +42,6 @@ export const createClient = <Configuration = any,>(
   client.set('connection', connection)
 
   client.configure(userClient)
+  client.configure(favoriteClient)
   return client
 }
