@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { feedbackClient } from './services/feedback/feedback.shared'
+export type {
+  Feedback,
+  FeedbackData,
+  FeedbackQuery,
+  FeedbackPatch
+} from './services/feedback/feedback.shared'
+
 import { favoriteClient } from './services/favorites/favorites.shared'
 export type {
   Favorite,
@@ -43,5 +51,6 @@ export const createClient = <Configuration = any,>(
 
   client.configure(userClient)
   client.configure(favoriteClient)
+  client.configure(feedbackClient)
   return client
 }
