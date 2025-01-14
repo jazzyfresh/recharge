@@ -5,6 +5,12 @@
   },
   "host": "HOSTNAME",
   "authentication": {
-    "secret": "FEATHERS_SECRET"
+    "secret": "FEATHERS_SECRET",
+    "oauth": {
+      "github": {
+        "key": "GITHUB_OAUTH_KEY",
+        "secret": "GITHUB_OAUTH_SECRET"
+      }
+    }
   }
 }
