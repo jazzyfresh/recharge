@@ -33,6 +33,7 @@ export class ChargerService<ServiceParams extends ChargerParams = ChargerParams>
     //   public access
     //   available status
     //   within 50 mile radius
+    console.log(`find location: ${location}`)
     return await axios.get(`https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=DEMO_KEY&fuel_type=ELEC&access=public&status=E&radius=50&location=${location}`)
       .then((response) => {
         return response.data
@@ -44,6 +45,7 @@ export class ChargerService<ServiceParams extends ChargerParams = ChargerParams>
   }
 
   async get(id: Id, _params?: ServiceParams): Promise<Charger> {
+    console.log(`get id: ${id}`)
     return await axios.get(`https://developer.nrel.gov/api/alt-fuel-stations/v1/${id}.json?api_key=DEMO_KEY`)
       .then((response) => {
         return response.data
