@@ -3,8 +3,14 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 
 import { connectToDatabase } from './services/db';
+
 import { userRouter } from './routes/userRoutes';
+import { reviewRouter } from './routes/reviewRoutes';
+import { favoriteRouter } from './routes/favoriteRoutes';
+
 import { userSchemaValidation } from './models/user';
+import { reviewSchemaValidation } from './models/review';
+import { favoriteSchemaValidation } from './models/favorite';
 
 // Environment Variables
 dotenv.config();
@@ -23,9 +29,13 @@ connectToDatabase()
       res.send("¡Vamos!");
     });
     app.use('/users', userRouter);
+    app.use('/reviews', reviewRouter);
+    app.use('/favorites', favoriteRouter);
 
     // Validators
     userSchemaValidation();
+    reviewSchemaValidation();
+    favoriteSchemaValidation();
 
     // Start server
     app.listen(PORT, () => {
