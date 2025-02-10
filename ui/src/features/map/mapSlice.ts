@@ -16,7 +16,7 @@ export interface MapState {
 const initialState: MapState = {
   latitude: 34.052235,
   longitude: -118.243683,
-  address: "",
+  address: "317 S Broadway Los Angeles CA",
   zoom: 13,
   chargers: [],
 };
@@ -47,6 +47,8 @@ export const mapSlice = createSlice({
       .addCase(getChargers.fulfilled, (state, action) => {
         state.status = 'idle';
         state.chargers = action.payload;
+        state.latitude = action.payload.latitude;
+        state.longitude = action.payload.longitude;
       })
       .addCase(getChargers.rejected, (state) => {
         state.status = 'failed';
