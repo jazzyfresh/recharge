@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
-import { fetchChargers } from './altFuelAPI';
+import { RootState, AppThunk } from '../../app/store.ts';
+import { fetchChargers } from './altFuelAPI.ts';
 // TODO: integrate favorites in markers
 // import { fetchFavorites } from './rechargeAPI';
 

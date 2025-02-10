@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import mapReducer from '../features/map/mapSlice';
+import mapReducer from '../features/map/mapSlice.ts';
 
 export const store = configureStore({
   reducer: {

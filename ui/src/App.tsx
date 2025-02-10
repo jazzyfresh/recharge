@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './/reshot-icon-battery-plug.svg';
-import { Map } from './features/map/Map';
+import { Map } from './features/map/Map.tsx';
 import './App.css';
 
 function App() {

@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../app/hooks.ts';
 import {
   selectAddress,
   selectLatitude,
@@ -13,7 +13,7 @@ import {
   selectZoom,
   selectChargers,
   getChargers,
-} from './mapSlice';
+} from './mapSlice.ts';
 
 const style = {
   height:"650px",
