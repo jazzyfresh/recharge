@@ -2,122 +2,117 @@ import react from 'react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod"
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks.ts';
 import {
+  selectUser,
   selectAddress,
   selectChargers,
+  selectFavorites,
   setAddress,
   getChargers,
+  getFavorites,
+  addFavorite,
+  addFeedback,
 } from './chargerSlice.ts';
 
 export function ChargerSearchForm() {
   const address = useAppSelector(selectAddress);
   const dispatch = useAppDispatch();
-	const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
     dispatch(getChargers(address));
   }, []);
 
   const onSubmit = (data) => {
-		console.log(data);
     dispatch(setAddress(data.address));
     dispatch(getChargers(data.address));
-	};
+  };
 
   return (
-		<form className="max-w-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
+    <form className="max-w-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="address-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
         Charging Stations Near You
       </label>
-			<div className="relative">
+      <div className="relative">
         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
         </div>
         <input className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-purple-500 focus:border-purple-500" 
-					id="address-search"
+          id="address-search"
           type="search" 
-					name="address"
-					placeholder="3rd Street Promenade, Santa Monica, CA"
-					{...register('address', { required: true })}
-				/>
+          name="address"
+          placeholder="3rd Street Promenade, Santa Monica, CA"
+          {...register('address', { required: true })}
+        />
         <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-4 py-2">
           Search
         </button>
-			</div>
+      </div>
       <div>
-				{errors?.address && <p className="text-red-500 text-xs italic">Please enter an address to search</p>}
+        {errors?.address && <p className="text-red-500 text-xs italic">Please enter an address to search</p>}
       </div>
     </form>
   )
 };
 
-export function ChargerFeedbackForm({ onClose }) {
-	const { register, handleSubmit, errors } = useForm();
+const FeedbackFormSchema = z.object({
+  rating: z.number().int().gte(0).lte(10),
+  description: z.string().optional().or(z.literal("")),
+});
 
-  const onSubmit = (data) => {
-		console.log(data);
+type FeedbackFormType = z.infer<typeof FeedbackFormSchema>;
+
+export function ChargerFeedbackForm({ charger, onClose }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    valueAsNumber,
+  } = useForm<FeedbackFormType>({
+    resolver: zodResolver(FeedbackFormSchema),
+  });
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
+
+  const onSubmit = (data: FeedbackFormType) => {
+    dispatch(addFeedback({
+      user: user,
+      chargerId: charger.id,
+      rating: data.rating,
+      description: data.description,
+    }));
     onClose();
-	};
+  };
 
-	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<div className="mb-4">
-				<label className="block text-gray-700 font-medium mb-2" htmlFor="username">
-					Username
-				</label>
-				<input
-					className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
-					id="username"
-					type="text"
-					name="username"
-					placeholder="username"
-					{...register('username', { required: true })}
-				/>
-				{errors?.username && <p className="text-red-500 text-xs italic">Username is required</p>}
-			</div>
-			<div className="mb-4">
-				<label className="block text-gray-700 font-medium mb-2" htmlFor="chargerId">
-					ChargerId
-				</label>
-				<input
-					className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
-					id="chargerId"
-					type="number"
-					name="chargerId"
-					{...register('number', { required: true })}
-				/>
-				{errors?.chargerId && <p className="text-red-500 text-xs italic">chargerId is required</p>}
-			</div>
-			<div className="mb-4">
-				<label className="block text-gray-700 font-medium mb-2" htmlFor="rating">
-					Rating
-				</label>
-				<input
-					className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
-					id="rating"
-					type="number"
-					name="rating"
-					{...register('number', { required: true })}
-				/>
-				{errors?.rating && <p className="text-red-500 text-xs italic">rating is required</p>}
-			</div>
-			<div className="mb-4">
-				<label className="block text-gray-700 font-medium mb-2" htmlFor="description">
-					Feedback
-				</label>
-				<input
-					className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
-					id="description"
-					type="text"
-					name="description"
-					{...register('text', { required: true })}
-				/>
-				{errors?.description && <p className="text-red-500 text-xs italic">Feedback description is required</p>}
-			</div>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-medium mb-2" htmlFor="rating">
+          Rating
+        </label>
+        <input
+          className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
+          type="number"
+          {...register("rating", { valueAsNumber: true })}
+        />
+        {errors?.rating && <p className="text-red-500 text-xs italic">{errors?.rating?.message}</p>}
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-medium mb-2" htmlFor="description">
+          Feedback
+        </label>
+        <input
+          className="appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-500"
+          {...register("description")}
+        />
+        {errors?.description && <p className="text-red-500 text-xs italic">{errors?.description?.message}</p>}
+      </div>
       <div className="flex justify-between">
         <button
           className="bg-indigo-500 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -133,17 +128,19 @@ export function ChargerFeedbackForm({ onClose }) {
           Cancel
         </button>
       </div>
-		</form>
-	);
+    </form>
+  );
 };
 
-function ChargerDetail({ charger }) {
+function ChargerDetail({ charger, favorite }) {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(favorite);
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
 
   const toggleFavorite = () => {
-    console.log(`favorite: ${charger.station_name}`);
     setIsFavorite(!isFavorite);
+    dispatch(addFavorite({ user: user, chargerId: charger.id }));
   }
   return (
     <div className="max-w-md mx-auto rounded overflow-hidden shadow-sm">
@@ -164,13 +161,12 @@ function ChargerDetail({ charger }) {
         <button className="inline-block bg-gray-200 hover:bg-purple-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 hover:text-gray-900 mr-2 mb-2"
           onClick={() => {
             setShowFeedbackForm(true);
-            console.log(`feedback: ${charger.station_name}`);
           }}
         >
           Submit feedback
         </button>
         {showFeedbackForm && (
-          <ChargerFeedbackForm onClose={() => setShowFeedbackForm(false)} />
+          <ChargerFeedbackForm charger={charger} onClose={() => setShowFeedbackForm(false)} />
         )}
       </div>
     </div>
@@ -178,15 +174,20 @@ function ChargerDetail({ charger }) {
 };
 
 function ChargerList() {
-  const address = useAppSelector(selectAddress);
+  const user = useAppSelector(selectUser);
   const chargers = useAppSelector(selectChargers);
+  const favorites = useAppSelector(selectFavorites);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getFavorites(user));
+  }, []);
 
   return (
     <div>
         {chargers && chargers.fuel_stations && chargers.fuel_stations.map((charger) => {
             return (
-              <ChargerDetail key={`charger-detail-${charger.id}`} charger={charger} />
+              <ChargerDetail key={`charger-detail-${charger.id}`} charger={charger} favorite={favorites.includes(charger.id)} />
             )
         })}
     </div>

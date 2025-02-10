@@ -15,7 +15,7 @@ export async function feedbackSchemaValidation() {
     "validator": {
       $jsonSchema: {
         bsonType: "object",
-        required: ["username", "chargerId", "rating", "description"],
+        required: ["username", "chargerId", "rating"],
         additionalProperties: false,
         properties: {
           _id: {},
@@ -33,7 +33,7 @@ export async function feedbackSchemaValidation() {
           },
           description: {
             bsonType: "string",
-            description: "'description' is required and is a string"
+            description: "'description' is a string"
           }
         }
       }
