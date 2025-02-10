@@ -1,26 +1,15 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks.ts';
 import {
-  selectAddress,
   selectLatitude,
   selectLongitude,
   selectZoom,
   selectChargers,
   getChargers,
-} from './mapSlice.ts';
-
-const style = {
-  height:"650px",
-  width: "900px",
-};
-
-const DEFAULT_ADDRESS = "317 S Broadway Los Angeles CA"
+} from './chargerSlice.ts';
 
 function ChangeView({ center, zoom }) {
   const map = useMap();
@@ -28,8 +17,7 @@ function ChangeView({ center, zoom }) {
   return null;
 }
 
-export function Map() {
-  const [address, setAddress] = useState(DEFAULT_ADDRESS);
+export function ChargerMap() {
   const latitude = useAppSelector(selectLatitude);
   const longitude = useAppSelector(selectLongitude);
   const zoom = useAppSelector(selectZoom);
@@ -38,26 +26,9 @@ export function Map() {
 
   const center = [latitude, longitude];
 
-  useEffect(() => {
-    dispatch(getChargers(address));
-  }, []);
-
   return (
     <div id="mapid">
-      <TextField 
-        id="outlined-basic" 
-        label="Address" 
-        variant="outlined" 
-        value={address} 
-        onChange={(e) => setAddress(e.target.value)}
-      />
-      <Button 
-        type="submit" 
-        onClick={() => dispatch(getChargers(address))}
-      >
-        Find Chargers
-      </Button>
-      <MapContainer center={center} zoom={zoom} scrollWheelZoom={false} style={style}>
+      <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} className="h-[800px]">
         <ChangeView center={center} zoom={zoom} /> 
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

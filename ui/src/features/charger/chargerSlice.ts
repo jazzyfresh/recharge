@@ -4,7 +4,7 @@ import { fetchChargers } from './altFuelAPI.ts';
 // TODO: integrate favorites in markers
 // import { fetchFavorites } from './rechargeAPI';
 
-export interface MapState {
+export interface ChargerState {
   latitude: number;
   longitude: number;
   zoom: number;
@@ -13,16 +13,16 @@ export interface MapState {
   status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: MapState = {
+const initialState: ChargerState = {
   latitude: 34.052235,
   longitude: -118.243683,
   address: "317 S Broadway Los Angeles CA",
-  zoom: 13,
+  zoom: 15,
   chargers: [],
 };
 
 export const getChargers = createAsyncThunk(
-  'map/getChargers',
+  'charger/getChargers',
   async (address: string) => {
     const response = await fetchChargers(address);
     // The value we return becomes the `fulfilled` action payload
@@ -30,13 +30,16 @@ export const getChargers = createAsyncThunk(
   }
 );
 
-export const mapSlice = createSlice({
-  name: 'map',
+export const chargerSlice = createSlice({
+  name: 'charger',
   initialState,
   reducers: {
     changeCenter: (state, action: PayloadAction<any>) => {
       state.latitude = action.payload.latitude;
       state.longitude = action.payload.longitude;
+    },
+    setAddress: (state, action: PayloadAction<string>) => {
+      state.address = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -56,12 +59,12 @@ export const mapSlice = createSlice({
   },
 });
 
-export const { changeCenter } = mapSlice.actions;
+export const selectLatitude = (state: RootState) => state.charger.latitude;
+export const selectLongitude = (state: RootState) => state.charger.longitude;
+export const selectAddress = (state: RootState) => state.charger.address;
+export const selectZoom = (state: RootState) => state.charger.zoom;
+export const selectChargers = (state: RootState) => state.charger.chargers;
 
-export const selectLatitude = (state: RootState) => state.map.latitude;
-export const selectLongitude = (state: RootState) => state.map.longitude;
-export const selectAddress = (state: RootState) => state.map.address;
-export const selectZoom = (state: RootState) => state.map.zoom;
-export const selectChargers = (state: RootState) => state.map.chargers;
+export const { setAddress, changeCenter } = chargerSlice.actions
 
-export default mapSlice.reducer;
+export default chargerSlice.reducer;

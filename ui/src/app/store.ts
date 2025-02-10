@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import mapReducer from '../features/map/mapSlice.ts';
+import chargerReducer from '../features/charger/chargerSlice.ts';
 
 export const store = configureStore({
   reducer: {
-    map: mapReducer,
+    charger: chargerReducer,
   },
 });
 

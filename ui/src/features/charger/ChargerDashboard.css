@@ -1,0 +1,6 @@
+@media (min-width: 640px) {
+    .w-fixed {
+        flex: 0 1 500px;
+        min-width: 500px;
+    }
+}
