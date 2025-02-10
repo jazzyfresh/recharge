@@ -9,8 +9,13 @@ export const favoriteRouter = express.Router();
 favoriteRouter.use(express.json());
 
 favoriteRouter.get("/", async (req: Request, res: Response) => {
+  const username = req?.query?.user;
+  const query = username ? {username: username} : {};
+  console.log("favorites for:", username);
+  console.log("query:", query);
   try {
-    const favorites = (await collections.favorites?.find({}).toArray()) as Favorite[];
+    const favorites = (await collections.favorites?.find(query).toArray()) as Favorite[];
+    console.log(favorites);
     res.status(200).send(favorites);
   } catch (error) {
     res.status(500).send(error.message);

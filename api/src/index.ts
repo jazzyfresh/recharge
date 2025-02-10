@@ -5,11 +5,11 @@ import cors from "cors";
 import { connectToDatabase } from './services/db';
 
 import { userRouter } from './routes/userRoutes';
-import { reviewRouter } from './routes/reviewRoutes';
+import { feedbackRouter } from './routes/feedbackRoutes';
 import { favoriteRouter } from './routes/favoriteRoutes';
 
 import { userSchemaValidation } from './models/user';
-import { reviewSchemaValidation } from './models/review';
+import { feedbackSchemaValidation } from './models/feedback';
 import { favoriteSchemaValidation } from './models/favorite';
 
 // Environment Variables
@@ -29,12 +29,12 @@ connectToDatabase()
       res.send("¡Vamos!");
     });
     app.use('/users', userRouter);
-    app.use('/reviews', reviewRouter);
+    app.use('/feedback', feedbackRouter);
     app.use('/favorites', favoriteRouter);
 
     // Validators
     userSchemaValidation();
-    reviewSchemaValidation();
+    feedbackSchemaValidation();
     favoriteSchemaValidation();
 
     // Start server

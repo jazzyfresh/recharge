@@ -1,7 +1,7 @@
 import { ObjectId, WithId, Document } from "mongodb";
 import { dbCommand } from "../services/db";
 
-export default interface Review extends WithId<Document> {
+export default interface Feedback extends WithId<Document> {
   username: string,
   chargerId: number,
   rating: number,
@@ -9,9 +9,9 @@ export default interface Review extends WithId<Document> {
   id?: ObjectId
 }
 
-export async function reviewSchemaValidation() {
+export async function feedbackSchemaValidation() {
   await dbCommand({
-    "collMod": "reviews",
+    "collMod": "feedback",
     "validator": {
       $jsonSchema: {
         bsonType: "object",

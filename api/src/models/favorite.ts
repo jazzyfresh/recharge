@@ -29,4 +29,9 @@ export async function favoriteSchemaValidation() {
       }
     }
   })
+
 }
+// TODO: export schema validation and index creation
+//       into a one time script
+// db.favorites.createIndex( { chargerId: 1, username: 1 }, { unique: true } )
+// db.users.createIndex( { username: 1 }, { unique: true} )
